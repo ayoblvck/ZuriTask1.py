@@ -7,20 +7,19 @@ previous_balance = 10000
 
 # Beginning of user experience with ATM
 def welcome():
-    isValidOptionSelected = False
     print("Welcome to BankPython")
     print(f"The date and time is {date}")
 
-    while isValidOptionSelected == False:
-        haveAccount = int(input("do you have an account with us: Enter 1(yes) or 2(no): "))
+    while True:
+        haveAccount = int(input("Do you have an account with us: Enter 1(yes) or 2(no): "))
         if(haveAccount ==1):
-            isValidOptionSelected =  True
+            False
             login()
         elif(haveAccount == 2):
-            isValidOptionSelected = True
+            False
             print(register()) 
         else:
-            print("you have selected an invalid option")
+            print("You have selected an invalid option")
 
 # create an account: Email, First name, last name and password
 def register():
@@ -31,35 +30,42 @@ def register():
     password = input("Create new password: ")
 
     database[accountNumber] = [firstName, lastName, email, password]
-    print(f"your account has been created, your account number is {accountNumber}")
+    print(f"Your account has been created!! \nyour account number is {accountNumber}")
     login()
 
 
 # login to your account: with account number and password
+# Excepts valueError
 def login():
+    isNotValueError = False
     isLoginSuccessful = False
     print("Please login!")
-    while isLoginSuccessful == False:   
-        user_account = int(input("what is your account number: "))
-        user_password = input("Enter your password: ")
+    while isLoginSuccessful == False: 
+        while isNotValueError == False:
+            try:
+                user_account = int(input("Enter your account number: "))
+            except ValueError:
+                print("Account number should be numbers")
+                isNotValueError = False
+            else:
+                user_password = input("Enter your password: ")
+                isNotValueError = True
         if (user_account == accountNumber) and (user_password == database[accountNumber][3]):
-           
-            print("you have succesfully logged in!!")
+            print("You have succesfully logged in!!")
             isLoginSuccessful = True
             init_bank_action()
         else:
-            print("invalid account number or email address!!!")
-            isInputValid = False
-            while isInputValid == False:
+            print("Invalid account number or email address!!!")
+            while True:
                 user_input = int(input("Type 1 to create an account\nType 2 to try again\n"))
                 if user_input == 1:
                     register()
-                    isInputValid = True
+                    False
                 elif user_input == 2:
                     login()
-                    isInputValid = True
+                    False
                 else:
-                    print("invalid selection")
+                    print("Invalid selection")
                      
 
 #Generate a random account number    
@@ -68,7 +74,7 @@ def generateAccountNumber():
 accountNumber = generateAccountNumber()
 
 
-# Initial ATM task after successful login
+#ATM task after successful login: Withdraw, Deposit or Complaint
 def init_bank_action():
     print(f'Welcome {database[accountNumber][0]} {database[accountNumber][1]}' )
     print("These are the available options: ")
@@ -96,24 +102,25 @@ def init_bank_action():
 
 # Function for withdrawal option
 def withdrawal():
-    Withdrawal_amount = int(input("how much would you like to withdraw? "))
-    print("processing...")
-    print("take your cash!!!")
+    Withdrawal_amount = int(input("How much would you like to withdraw (in figures)? "))
+    print("Processing...")
+    print("Take your cash!!!")
     try_again()
  
 
 # Function for deposit option
 def deposit():
-    deposit_amount= int(input("how much would you like to deposit: "))
-    print("processing...")
-    print("your current balance is {}" .format(previous_balance + deposit_amount))
+    deposit_amount= int(input("How much would you like to deposit (in figures): "))
+    print("Processing...")
+    print("Deposit is successful!")
+    print("Your current balance is {}" .format(previous_balance + deposit_amount))
     try_again()
 
 
 #function for complaint option
 def complaint():
     report = input("What issue would you like to report: ")
-    print("processing...")
+    print("Processing...")
     print("Thank you for contacting us, your report has been recorded and would be looked into!!")
     try_again()
 
@@ -133,6 +140,7 @@ def try_again():
         elif another_transaction == 2:
             print("Thank you and have a nice day!")
             isValidOptionSelected = True
+            exit()
         else:
             print("invalid selection, try again!")
 

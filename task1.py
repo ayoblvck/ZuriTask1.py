@@ -11,19 +11,23 @@ def welcome():
     print(f"The date and time is {date}")
 
     while True:
-        haveAccount = int(input("Do you have an account with us: Enter 1(yes) or 2(no): "))
-        if(haveAccount ==1):
-            False
-            login()
-        elif(haveAccount == 2):
-            False
-            print(register()) 
+        try:
+            haveAccount = int(input("Do you have an account with us: Enter 1(yes) or 2(no): "))
+        except:
+            print("invalid selection, try again")
         else:
-            print("You have selected an invalid option")
+            if(haveAccount ==1):
+                False
+                login()
+            elif(haveAccount == 2):
+                False
+                register()
+            else:
+                print("You have selected an invalid option")
 
 # create an account: Email, First name, last name and password
 def register():
-    print("********Register********")
+    print("\n********Register********")
     email = input("Enter your email address: ")
     firstName = input("Enter your first name: ").capitalize()
     lastName = input("Enter your last name: ").capitalize()
@@ -39,7 +43,7 @@ def register():
 def login():
     isNotValueError = False
     isLoginSuccessful = False
-    print("Please login!")
+    print("\nPlease login!")
     while isLoginSuccessful == False: 
         while isNotValueError == False:
             try:
@@ -76,33 +80,37 @@ accountNumber = generateAccountNumber()
 
 #ATM task after successful login: Withdraw, Deposit or Complaint
 def init_bank_action():
-    print(f'Welcome {database[accountNumber][0]} {database[accountNumber][1]}' )
+    print(f'\n** Welcome {database[accountNumber][0]} {database[accountNumber][1]}!!!' )
     print("These are the available options: ")
-    print("1. Withdrawal")
-    print("2. Cash Deposit")
-    print("3. Complaint")
+    print("1. Withdrawal\n2. Cash Deposit\n3. Complaint\n4. Balance")
     valid_selection = False
     while valid_selection == False:
         selected_option = (int(input("Please select an option: ")))
         if(selected_option ==1):
             valid_selection = True
-            print("you selected the withdrawal option" )
+            print("You selected the withdrawal option" )
             withdrawal()   
         elif(selected_option ==2):
             valid_selection = True
-            print("you selected the deposit option" )
+            print("You selected the deposit option" )
             deposit()
         elif(selected_option == 3):
             valid_selection = True
-            print("you selected the complaint option" )
+            print("You selected the complaint option" )
             complaint()
+        elif(selected_option == 4):
+            valid_selection = True
+            print("You selected the balance option" )
+            balance()
         else:
             print("invalid option selected, please try again")
 
 
 # Function for withdrawal option
 def withdrawal():
+    global previous_balance
     Withdrawal_amount = int(input("How much would you like to withdraw (in figures)? "))
+    previous_balance -= Withdrawal_amount
     print("Processing...")
     print("Take your cash!!!")
     try_again()
@@ -110,10 +118,11 @@ def withdrawal():
 
 # Function for deposit option
 def deposit():
+    global previous_balance
     deposit_amount= int(input("How much would you like to deposit (in figures): "))
+    previous_balance += deposit_amount
     print("Processing...")
-    print("Deposit is successful!")
-    print("Your current balance is {}" .format(previous_balance + deposit_amount))
+    print(f"Deposit of N{deposit_amount} was successful!")
     try_again()
 
 
@@ -123,7 +132,12 @@ def complaint():
     print("Processing...")
     print("Thank you for contacting us, your report has been recorded and would be looked into!!")
     try_again()
+    
 
+#function prints the current balance
+def balance():
+    print(f"Your current balance is N{previous_balance}")
+    try_again()
 
 # To carry out another transaction: have to reenter password
 def try_again():
